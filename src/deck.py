@@ -1,24 +1,33 @@
 from contextlib import closing
-from dataclasses import dataclass
 from sqlite3 import Connection
 from typing import Optional, List
 
+from pydantic import BaseModel
 
-@dataclass
-class Deck:
+
+class NewDeck(BaseModel):
+    deck_name: str 
+    deck_left: Optional[str]
+    deck_right: Optional[str]
+
+
+class Deck(BaseModel):
     id: int 
     name: str 
     left: Optional[str]
     right: Optional[str]
 
 
-
-def create_deck(conn: Connection, name: str, left: Optional[str], right: Optional[str]):
+def create_deck(conn: Connection, new_deck: NewDeck):
     sql = """insert into deck(deck_name, left, right) 
              values(?,?,?);"""
 
     with closing(conn.cursor()) as cur:
-        cur.execute(sql, (name, left, right))
+        cur.execute(sql, (
+            new_deck.deck_name,
+            new_deck.deck_left,
+            new_deck.deck_right
+        ))
 
 
 def get_decks(conn: Connection) -> List[Deck]:
