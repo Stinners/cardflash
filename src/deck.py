@@ -12,14 +12,14 @@ class NewDeck(BaseModel):
 
 
 class Deck(BaseModel):
-    id: int 
+    deck_id: int 
     name: str 
     left: Optional[str]
     right: Optional[str]
 
 
 def create_deck(conn: Connection, new_deck: NewDeck):
-    sql = """insert into deck(deck_name, left, right) 
+    sql = """insert into deck(deck_name, left_name, right_name) 
              values(?,?,?);"""
 
     with closing(conn.cursor()) as cur:
@@ -31,7 +31,13 @@ def create_deck(conn: Connection, new_deck: NewDeck):
 
 
 def get_decks(conn: Connection) -> List[Deck]:
-    sql = "select deck_id as id, deck_name as name, left, right from deck;"
+    sql = """select
+                deck_id,
+                deck_name as name,
+                left_name as left, 
+                right_name as right 
+            from deck;"""
+
 
     with closing(conn.cursor()) as cur:
         cur.execute(sql)
@@ -39,3 +45,24 @@ def get_decks(conn: Connection) -> List[Deck]:
         decks = [Deck(**row) for row in rows]
         return decks
 
+def get_deck_by_id(conn: Connection, deck_id: int) -> Optional[Deck]:
+    sql = """select
+                deck_id,
+                deck_name as name,
+                left_name as left, 
+                right_name as right 
+            from deck
+            where deck_id = ?;"""
+
+    with closing(conn.cursor()) as cur:
+        cur.execute(sql, (deck_id,))
+        row = cur.fetchone() 
+        if row != None:
+            return Deck(**row)
+
+
+def delete_deck(conn: Connection, deck_id: int):
+    sql = """delete from deck where deck_id = ?;"""
+
+    with closing(conn.cursor()) as cur:
+        cur.execute(sql, (deck_id,))

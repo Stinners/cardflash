@@ -1,5 +1,7 @@
 **/__pycache__/*
 
 notes.txt
+.env
 
 db/*.sqlite3
+db/schema.sql
