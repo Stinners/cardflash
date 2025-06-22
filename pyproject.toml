@@ -7,5 +7,6 @@ requires-python = ">=3.12"
 dependencies = [
     "fastapi[standard]>=0.115.13",
     "jinja2>=3.1.6",
+    "python-dotenv>=1.1.0",
     "python-multipart>=0.0.20",
 ]

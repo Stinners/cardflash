@@ -1,6 +1,8 @@
 from contextlib import closing
 from sqlite3 import Connection
 from typing import Optional, List
+import logging
+logging.basicConfig(level=logging.INFO)
 
 from pydantic import BaseModel
 
@@ -21,6 +23,7 @@ class Deck(BaseModel):
 def create_deck(conn: Connection, new_deck: NewDeck):
     sql = """insert into deck(deck_name, left_name, right_name) 
              values(?,?,?);"""
+    logging.info("Executing create_deck")
 
     with closing(conn.cursor()) as cur:
         cur.execute(sql, (
