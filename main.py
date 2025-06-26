@@ -24,6 +24,7 @@ def db_conn():
     raw_db_url = CONFIG["DATABASE_URL"]  
     db_url = raw_db_url.removeprefix("sqlite:")  #type: ignore
     conn = sqlite3.connect(db_url)
+    conn.row_factory = sqlite3.Row
     try:
         conn.execute("PRAGMA foreign_keys = 1")
         yield conn 
@@ -38,16 +39,28 @@ DB_Conn = Depends(db_conn)
 
 ###################### Deck Routes #########################
 
-@app.post("/deck/create")
-def insert_deck(req: Request, data: Annotated[deck.NewDeck, Form()], conn = DB_Conn):
-    logging.info("Got Create Deck Form")
-    deck.create_deck(conn, data)
-    return templates.TemplateResponse(request=req, name="deck_create.html")
-
-
 @app.get("/deck/create")
 def insert_deck_template(req: Request):
     return templates.TemplateResponse(request=req, name="deck_create.html")
+
+
+@app.post("/deck/create")
+def insert_deck(req: Request, data: Annotated[deck.NewDeck, Form()], conn = DB_Conn):
+    logging.info("Got Create Deck Form")
+    try:
+        deck.create_deck(conn, data)
+        return templates.TemplateResponse(request=req, name="deck_create.html")
+    except Exception as ex:
+        return templates.TemplateResponse(request=req, name="deck_create.html", 
+                                          context={"error": str(ex)})
+
+
+@app.get("/deck/show/all")
+def show_all_decks(req: Request, conn = DB_Conn):
+    logging.info("Getting all decks")
+    decks = deck.get_decks(conn)
+    return templates.TemplateResponse(request=req, name="deck_show_all.html",
+                                      context={"decks": decks})
 
 
 

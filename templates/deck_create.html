@@ -1,4 +1,9 @@
 <div class="deck-form">
+  {% if error is not None %} 
+  <div class=error-message>
+      <p>{{ error }}</p>
+  </div>
+  {% end if %}
   <h2>Create Deck</h2>
   <form action="/deck/create" method="post">
       <div>

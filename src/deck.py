@@ -45,6 +45,7 @@ def get_decks(conn: Connection) -> List[Deck]:
     with closing(conn.cursor()) as cur:
         cur.execute(sql)
         rows = cur.fetchall() 
+        import pdb; pdb.set_trace()
         decks = [Deck(**row) for row in rows]
         return decks
 
