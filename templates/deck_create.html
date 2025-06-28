@@ -1,9 +1,11 @@
+{% extends "layout.html" %}
+{% block content %}
 <div class="deck-form">
-  {% if error is not None %} 
+  {% if error is not none %} 
   <div class=error-message>
       <p>{{ error }}</p>
   </div>
-  {% end if %}
+  {% endif %}
   <h2>Create Deck</h2>
   <form action="/deck/create" method="post">
       <div>
@@ -23,3 +25,4 @@
       </div>
   </form>
 </div class="deck-form">
+{% endblock %}

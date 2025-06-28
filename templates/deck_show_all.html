@@ -1,7 +1,16 @@
+{% extends "layout.html" %}
+{% block content %}
 <div class="deck_show">
+    <section class="new-deck-row">
+        <h2><a href="/deck/create">New</a></h2>
+    </section>
     {% for deck in decks %}
-    <div>
-        <h3>{{deck.name}}<h3>
-    </div>
+    <section class="deck-row">
+        <h3>{{deck.name}}</h3>
+        <a href="/card/create/deck/id/{{deck.deck_id}}">New Card</a>
+        <a href="/deck/practise/id/{{deck.deck_id}}">Practise</a>
+        <a href="/deck/edit/id/{{deck.deck_id}}">Edit</a>
+    </section>
     {% endfor %}
 </div>
+{% endblock %}

@@ -1,0 +1,26 @@
+header {
+    width: 100%;
+    padding: 0.8em 5em 0.8em 5em;
+    border-bottom: 1px solid;
+    margin-bottom: 2em;
+}
+
+header > * {
+    margin-right: 2em;
+}
+
+#main {
+    max-width: 1080px;
+    margin: auto;
+}
+
+.deck-row {
+    margin: 1em 0 1em 0;
+
+}
+
+.deck-row > h3,a  {
+    display: inline;
+    padding-right: 1em;
+}
+
