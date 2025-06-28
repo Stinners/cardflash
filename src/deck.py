@@ -2,10 +2,14 @@ from contextlib import closing
 from sqlite3 import Connection
 from typing import Optional, List
 import logging
-logging.basicConfig(level=logging.INFO)
+from typing import Annotated
 
 from pydantic import BaseModel
+from fastapi import Request, Form
 
+from src.router import app, templates, DB_Conn
+
+logging.basicConfig(level=logging.INFO)
 
 class NewDeck(BaseModel):
     deck_name: str 
@@ -19,6 +23,38 @@ class Deck(BaseModel):
     left: Optional[str]
     right: Optional[str]
 
+################### Routes ##########################33
+
+@app.get("/deck/create")
+def insert_deck_template(req: Request):
+    return templates.TemplateResponse(request=req, name="deck_create.html")
+
+
+@app.post("/deck/create")
+def insert_deck(req: Request, data: Annotated[NewDeck, Form()], conn = DB_Conn):
+    logging.info("Got Create Deck Form")
+    try:
+        create_deck(conn, data)
+        return templates.TemplateResponse(request=req, name="deck_create.html")
+    except Exception as ex:
+        return templates.TemplateResponse(request=req, name="deck_create.html", 
+                                          context={"error": str(ex)})
+
+
+@app.get("/deck/show/all")
+def show_all_decks(req: Request, conn = DB_Conn):
+    logging.info("Getting all decks")
+    decks = get_decks(conn)
+    return templates.TemplateResponse(request=req, name="deck_show_all.html",
+                                      context={"decks": decks})
+
+@app.get("/card/create/deck/{deck_id}")
+def create_card(req: Request, deck_id: int, conn = DB_Conn):
+    deck = get_deck_by_id(conn, deck_id)
+    return templates.TemplateResponse(request=req, name="deck_show_all.html",
+                                      context={"deck": deck})
+
+################### Handlers ##########################33
 
 def create_deck(conn: Connection, new_deck: NewDeck):
     sql = """insert into deck(deck_name, left_name, right_name) 
